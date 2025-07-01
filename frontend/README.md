@@ -1,3 +1,37 @@
+*PROJECT DIRECTORY*
+
+MOSDACPORTAL/
+├── frontend/
+│   ├── node_modules/
+│   ├── public/
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── mainpage/
+│   │   │   ├── chatbot.jsx
+│   │   │   ├── datavisualization.jsx
+│   │   │   ├── knowledgegraph.jsx
+│   │   │   ├── portal.jsx
+│   │   │   └── satellitetracker.jsx
+│   │   ├── App.css
+│   │   ├── App.jsx
+│   │   ├── index.css
+│   │   └── main.jsx
+│   ├── .gitignore
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── postcss.config.js
+│   ├── README.md
+│   └── tailwind.config.js
+
+
+
+
+
+
+
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
