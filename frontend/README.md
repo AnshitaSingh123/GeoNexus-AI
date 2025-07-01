@@ -1,31 +1,35 @@
 *PROJECT DIRECTORY*
 
+It appears you want the directory structure to be easily copy-pasted without formatting issues that might arise from the image's layout. I will provide the directory structure in a plain text block and also in a markdown code block, both of which should be robust for copying.
+
+**Plain Text Format:**
+
+```
 MOSDACPORTAL/
-├── frontend/
-│   ├── node_modules/
-│   ├── public/
-│   ├── src/
-│   │   ├── assets/
-│   │   ├── mainpage/
-│   │   │   ├── chatbot.jsx
-│   │   │   ├── datavisualization.jsx
-│   │   │   ├── knowledgegraph.jsx
-│   │   │   ├── portal.jsx
-│   │   │   └── satellitetracker.jsx
-│   │   ├── App.css
-│   │   ├── App.jsx
-│   │   ├── index.css
-│   │   └── main.jsx
-│   ├── .gitignore
-│   ├── eslint.config.js
-│   ├── index.html
-│   ├── package-lock.json
-│   ├── package.json
-│   ├── postcss.config.js
-│   ├── README.md
-│   └── tailwind.config.js
-
-
+frontend/
+├── node_modules/
+├── public/
+├── src/
+│   ├── assets/
+│   ├── mainpage/
+│   │   ├── chatbot.jsx
+│   │   ├── datavisualization.jsx
+│   │   ├── knowledgegraph.jsx
+│   │   ├── portal.jsx
+│   │   └── satellitetracker.jsx
+│   ├── App.css
+│   ├── App.jsx
+│   ├── index.css
+│   └── main.jsx
+├── .gitignore
+├── eslint.config.js
+├── index.html
+├── package-lock.json
+├── package.json
+├── postcss.config.js
+├── README.md
+└── tailwind.config.js
+```
 
 
 
