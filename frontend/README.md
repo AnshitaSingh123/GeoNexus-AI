@@ -1,8 +1,4 @@
-*PROJECT DIRECTORY*
-
-It appears you want the directory structure to be easily copy-pasted without formatting issues that might arise from the image's layout. I will provide the directory structure in a plain text block and also in a markdown code block, both of which should be robust for copying.
-
-**Plain Text Format:**
+**PROJECT DIRECTORY**
 
 ```
 MOSDACPORTAL/
