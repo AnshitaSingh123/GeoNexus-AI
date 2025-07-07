@@ -3,6 +3,7 @@ import ChatbotPage from './chatbot.jsx';
 import KnowledgeGraphPage from './knowledgegraph.jsx';
 import DataVisualizationPage from './datavisualization.jsx';
 import SatelliteTrackerPage from './satellitetracker.jsx';
+
 // This component will inject the necessary styles and scripts into the document head.
 const StyleSetup = () => {
     useEffect(() => {
@@ -92,6 +93,10 @@ const MoonIcon = () => (
     </svg>
 );
 
+
+
+
+ 
 const AIAssistantIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" viewBox="0 0 24 24" fill="currentColor">
         <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10c5.515 0 10-4.486 10-10S17.515 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z" />
@@ -172,30 +177,47 @@ const useAnimatedCounter = (end, duration = 2000) => {
     return [count, ref];
 };
 
-// Header Component
+// Header Component with animation and hover
 const Header = ({ setPage, theme, toggleTheme }) => {
     const navItems = ['AI Assistant', 'Knowledge Graph', 'Data Visualization', 'Product Catalog'];
-    
+
     return (
-        <header className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-md dark:shadow-gray-800 transition-colors duration-300">
-            {/* Changed: Removed 'container' and 'mx-auto' for a full-width header. Added padding. */}
+        <header className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-md dark:shadow-gray-800 transition-colors duration-300 animate-fade-in">
             <div className="w-full px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center py-3">
-                    <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setPage('home')}>
-                        <div className="bg-blue-600 p-2 rounded-lg">
+                    {/* Logo & Title */}
+                    <div
+                        className="flex items-center space-x-3 cursor-pointer transform transition-transform hover:scale-105"
+                        onClick={() => setPage('home')}
+                    >
+                        <div className="bg-blue-600 p-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
                             <LogoIcon />
                         </div>
-                        <span className="text-xl font-bold text-gray-800 dark:text-white">MOSDAC AI Portal</span>
+                        <span className="text-xl font-bold text-gray-800 dark:text-white tracking-wide transition-colors duration-300">
+                            MOSDAC AI Portal
+                        </span>
                     </div>
+
+                    {/* Navigation */}
                     <nav className="hidden md:flex items-center space-x-6">
                         {navItems.map(item => (
-                            <button key={item} onClick={() => setPage(item.toLowerCase().replace(/ /g, ''))} className="bg-transparent border-none p-0 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors duration-300 cursor-pointer">
-                                {item}
+                            <button
+                                key={item}
+                                onClick={() => setPage(item.toLowerCase().replace(/ /g, ''))}
+                                className="relative px-2 py-1 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all duration-300 transform hover:scale-105 group"
+                            >
+                                <span className="relative z-10">{item}</span>
+                                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
                             </button>
                         ))}
                     </nav>
+
+                    {/* Theme Toggle Button */}
                     <div className="flex items-center space-x-4">
-                        <button onClick={toggleTheme} className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-transform duration-300 transform hover:scale-110">
+                        <button
+                            onClick={toggleTheme}
+                            className="p-2 rounded-full bg-white dark:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-transform duration-300 transform hover:scale-110 shadow-md hover:shadow-xl"
+                        >
                             {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
                         </button>
                     </div>
@@ -205,65 +227,443 @@ const Header = ({ setPage, theme, toggleTheme }) => {
     );
 };
 
+
 // Hero Section Component
-const HeroSection = ({ setPage }) => (
-    <section className="relative py-20 md:py-32 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-teal-50 dark:from-gray-900 dark:via-gray-800 dark:to-teal-900 opacity-70 transition-colors duration-500"></div>
-        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-blue-200 dark:bg-blue-800 rounded-full filter blur-2xl opacity-30 animate-blob"></div>
-        <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-yellow-200 dark:bg-yellow-800 rounded-full filter blur-2xl opacity-30 animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-1/4 right-1/3 w-32 h-32 bg-green-200 dark:bg-green-800 rounded-full filter blur-2xl opacity-30 animate-blob animation-delay-4000"></div>
-        
-        <div className="relative w-full px-4 sm:px-6 lg:px-8">
-            <div className="animate-fade-in-up">
-                <div className="inline-block p-4 bg-blue-500/20 dark:bg-blue-400/20 rounded-full mb-6">
-                    <div className="p-2 bg-blue-600 dark:bg-blue-500 rounded-full">
-                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M19 3v4M17 5h4M12 19.586l-3.707-3.707a5.003 5.003 0 010-7.071 5.003 5.003 0 017.071 0 5.003 5.003 0 010 7.071L12 19.586z"></path></svg>
-                    </div>
-                </div>
-                <h1 className="text-4xl md:text-6xl font-extrabold text-gray-800 dark:text-white leading-tight">
-                    MOSDAC AI Portal
-                </h1>
-                <p className="mt-4 text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-                    Intelligent Geospatial Data Assistant
-                </p>
-                <p className="mt-6 text-base text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-                    Advanced AI-powered geospatial data retrieval system for satellite missions, data products, and scientific documentation. Explore satellite data with conversational ease using our knowledge graph-powered assistant.
-                </p>
-                <button onClick={() => document.getElementById('capabilities').scrollIntoView({ behavior: 'smooth' })} className="mt-10 px-8 py-4 bg-blue-600 text-white font-bold rounded-full hover:bg-blue-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
-                    Explore Our Tools
-                </button>
-            </div>
+
+
+const HeroSection = ({ setPage }) => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth) * 100,
+        y: (e.clientY / window.innerHeight) * 100
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  return (
+    <section className="relative py-20 md:py-32 text-center overflow-hidden min-h-screen flex items-center">
+      {/* Enhanced Animated Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-teal-50 dark:from-gray-900 dark:via-gray-800 dark:to-teal-900 transition-all duration-1000"></div>
+      
+      {/* Interactive Gradient Overlay */}
+      <div 
+        className="absolute inset-0 opacity-30 transition-all duration-300"
+        style={{
+          background: `radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(59, 130, 246, 0.3) 0%, transparent 50%)`
+        }}
+      ></div>
+
+      {/* Enhanced Floating Orbs */}
+      <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-blue-200 dark:bg-blue-800 rounded-full filter blur-2xl opacity-40 animate-float"></div>
+      <div className="absolute top-1/2 right-1/4 w-40 h-40 bg-yellow-200 dark:bg-yellow-800 rounded-full filter blur-2xl opacity-40 animate-float-delayed"></div>
+      <div className="absolute bottom-1/4 right-1/3 w-36 h-36 bg-green-200 dark:bg-green-800 rounded-full filter blur-2xl opacity-40 animate-float-slow"></div>
+      <div className="absolute top-1/3 left-1/2 w-28 h-28 bg-purple-200 dark:bg-purple-800 rounded-full filter blur-2xl opacity-30 animate-float-reverse"></div>
+
+      {/* 3D Geometric Shapes */}
+      <div className="absolute top-10 right-10 w-20 h-20 border-2 border-blue-300 dark:border-blue-700 rotate-45 animate-spin-slow opacity-20"></div>
+      <div className="absolute bottom-10 left-10 w-16 h-16 border-2 border-teal-300 dark:border-teal-700 animate-pulse opacity-20"></div>
+      
+      {/* 3D Floating Cubes */}
+      <div className="absolute top-16 left-16 animate-float-3d">
+        <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 shadow-2xl transform rotate-45 animate-cube-rotate opacity-30"></div>
+        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 shadow-xl transform rotate-45 translate-x-2 translate-y-2 animate-cube-rotate-delayed opacity-20"></div>
+      </div>
+      
+      {/* 3D Pyramid */}
+      <div className="absolute top-1/3 right-16 animate-float-reverse">
+        <div className="relative w-16 h-16">
+          <div className="absolute inset-0 bg-gradient-to-b from-purple-400 to-purple-600 transform rotate-45 shadow-2xl animate-pyramid-float opacity-25"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-purple-500 to-purple-700 transform rotate-45 translate-x-1 translate-y-1 shadow-xl opacity-15"></div>
         </div>
+      </div>
+      
+      {/* 3D Hexagons */}
+      <div className="absolute bottom-1/3 left-20 animate-float-slow">
+        <div className="relative">
+          <div className="w-14 h-14 bg-gradient-to-br from-teal-400 to-teal-600 transform rotate-30 shadow-2xl animate-hexagon-spin opacity-30" style={{clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'}}></div>
+          <div className="absolute top-0 left-0 w-14 h-14 bg-gradient-to-br from-teal-500 to-teal-700 transform rotate-30 translate-x-1 translate-y-1 shadow-xl opacity-20" style={{clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'}}></div>
+        </div>
+      </div>
+      
+      {/* 3D Spheres with Gradient */}
+      <div className="absolute top-1/4 right-1/3 animate-float-3d">
+        <div className="relative">
+          <div className="w-10 h-10 bg-gradient-radial from-yellow-300 via-yellow-500 to-yellow-700 rounded-full shadow-2xl animate-sphere-pulse opacity-40"></div>
+          <div className="absolute top-0 left-0 w-10 h-10 bg-gradient-radial from-yellow-400 via-yellow-600 to-yellow-800 rounded-full translate-x-1 translate-y-1 shadow-xl opacity-25"></div>
+        </div>
+      </div>
+
+    
+      
+      {/* 3D Triangular Prisms */}
+      <div className="absolute bottom-1/4 right-1/4 animate-float-delayed">
+        <div className="relative">
+          <div className="w-0 h-0 border-l-8 border-r-8 border-b-14 border-l-transparent border-r-transparent border-b-gradient-to-r from-green-400 to-green-600 shadow-2xl animate-triangle-rotate opacity-30"></div>
+          <div className="absolute top-0 left-0 w-0 h-0 border-l-8 border-r-8 border-b-14 border-l-transparent border-r-transparent border-b-green-500 translate-x-1 translate-y-1 shadow-xl opacity-20"></div>
+        </div>
+      </div>
+      
+      {/* 3D Rings */}
+      <div className="absolute top-1/2 left-1/4 animate-float-3d">
+        <div className="relative">
+          <div className="w-12 h-12 border-4 border-indigo-400 rounded-full shadow-2xl animate-ring-spin opacity-30"></div>
+          <div className="absolute top-0 left-0 w-12 h-12 border-4 border-indigo-500 rounded-full translate-x-1 translate-y-1 shadow-xl opacity-20"></div>
+          <div className="absolute top-2 left-2 w-8 h-8 border-2 border-indigo-300 rounded-full animate-ring-spin-reverse opacity-25"></div>
+        </div>
+      </div>
+      
+      {/* 3D Diamonds */}
+      <div className="absolute bottom-16 right-20 animate-float-slow">
+        <div className="relative">
+          <div className="w-8 h-8 bg-gradient-to-br from-pink-400 to-pink-600 transform rotate-45 shadow-2xl animate-diamond-sparkle opacity-35"></div>
+          <div className="absolute top-0 left-0 w-8 h-8 bg-gradient-to-br from-pink-500 to-pink-700 transform rotate-45 translate-x-1 translate-y-1 shadow-xl opacity-25"></div>
+        </div>
+      </div>
+      
+      {/* Animated Grid */}
+      <div className="absolute inset-0 opacity-5 dark:opacity-10">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500 to-transparent animate-grid-move"></div>
+      </div>
+
+      {/* Main Content */}
+      <div className="relative w-full px-4 sm:px-6 lg:px-8 z-10">
+        <div className="animate-fade-in-up">
+          {/* Enhanced Icon Container */}
+          <div className="relative inline-block mb-8">
+            <div className="absolute inset-0 bg-blue-500/30 rounded-full blur-xl animate-pulse"></div>
+            <div className="relative p-6 bg-gradient-to-br from-blue-500/20 to-teal-500/20 dark:from-blue-400/20 dark:to-teal-400/20 rounded-full backdrop-blur-sm border border-white/20 dark:border-gray-700/20 shadow-2xl transform hover:scale-110 transition-all duration-500">
+              <div className="p-3 bg-gradient-to-br from-blue-600 to-blue-700 dark:from-blue-500 dark:to-blue-600 rounded-full shadow-lg">
+                <svg className="w-10 h-10 text-white animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M19 3v4M17 5h4M12 19.586l-3.707-3.707a5.003 5.003 0 010-7.071 5.003 5.003 0 017.071 0 5.003 5.003 0 010 7.071L12 19.586z"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Enhanced Title */}
+          <h1 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-800 via-blue-600 to-teal-600 dark:from-white dark:via-blue-400 dark:to-teal-400 leading-tight animate-gradient-text mb-6">
+            MOSDAC AI Portal
+          </h1>
+
+          {/* Animated Subtitle */}
+          <div className="relative">
+            <p className="text-xl md:text-2xl font-semibold text-gray-700 dark:text-gray-200 max-w-3xl mx-auto animate-slide-up mb-6">
+              Intelligent Geospatial Data Assistant
+            </p>
+            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-blue-500 to-teal-500 rounded-full animate-width-expand"></div>
+          </div>
+
+          {/* Enhanced Description */}
+          <p className="mt-8 text-base md:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed animate-fade-in-delayed">
+            Advanced AI-powered geospatial data retrieval system for satellite missions, data products, and scientific documentation. Explore satellite data with conversational ease using our knowledge graph-powered assistant.
+          </p>
+
+          {/* Premium CTA Button */}
+          <div className="mt-12 relative">
+            <button 
+              onClick={() => document.getElementById('capabilities')?.scrollIntoView({ behavior: 'smooth' })}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              className="group relative px-10 py-5 bg-gradient-to-r from-blue-600 via-blue-700 to-teal-600 text-white font-bold rounded-full overflow-hidden transition-all duration-500 transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
+            >
+              {/* Button Background Animation */}
+              <div className="absolute inset-0 bg-gradient-to-r from-teal-600 via-blue-700 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              
+              {/* Shimmer Effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+              
+              {/* Button Content */}
+              <span className="relative z-10 flex items-center gap-3">
+                <span className="animate-bounce-subtle">Explore Our Tools</span>
+                <svg className={`w-5 h-5 transition-transform duration-300 ${isHovered ? 'translate-x-2' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                </svg>
+              </span>
+              
+              {/* Glow Effect */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 to-teal-600 blur-lg opacity-0 group-hover:opacity-50 transition-opacity duration-500 -z-10"></div>
+            </button>
+          </div>
+
+          {/* Floating Action Indicators */}
+          <div className="mt-16 flex justify-center gap-6">
+            <div className="animate-bounce-slow">
+              <div className="w-3 h-3 bg-blue-500 rounded-full opacity-60"></div>
+            </div>
+            <div className="animate-bounce-slow animation-delay-200">
+              <div className="w-3 h-3 bg-teal-500 rounded-full opacity-60"></div>
+            </div>
+            <div className="animate-bounce-slow animation-delay-400">
+              <div className="w-3 h-3 bg-purple-500 rounded-full opacity-60"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <div className="w-6 h-10 border-2 border-gray-400 dark:border-gray-600 rounded-full flex justify-center">
+          <div className="w-1 h-3 bg-gray-400 dark:bg-gray-600 rounded-full mt-2 animate-scroll-indicator"></div>
+        </div>
+      </div>
+
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        @keyframes float-delayed {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-30px) rotate(-180deg); }
+        }
+        
+        @keyframes float-slow {
+          0%, 100% { transform: translateY(0px) scale(1); }
+          50% { transform: translateY(-15px) scale(1.1); }
+        }
+        
+        @keyframes float-reverse {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(25px) rotate(360deg); }
+        }
+        
+        @keyframes spin-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        
+        @keyframes grid-move {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+        
+        @keyframes gradient-text {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes slide-up {
+          0% { transform: translateY(20px); opacity: 0; }
+          100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes width-expand {
+          0% { width: 0; }
+          100% { width: 8rem; }
+        }
+        
+        @keyframes fade-in-delayed {
+          0% { opacity: 0; transform: translateY(10px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes bounce-subtle {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-2px); }
+        }
+        
+        @keyframes bounce-slow {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+        }
+        
+        @keyframes scroll-indicator {
+          0% { transform: translateY(0); opacity: 1; }
+          100% { transform: translateY(12px); opacity: 0; }
+        }
+        
+        @keyframes float-3d {
+          0%, 100% { transform: translateY(0px) translateZ(0) rotateX(0deg) rotateY(0deg); }
+          25% { transform: translateY(-10px) translateZ(10px) rotateX(15deg) rotateY(90deg); }
+          50% { transform: translateY(-20px) translateZ(20px) rotateX(30deg) rotateY(180deg); }
+          75% { transform: translateY(-10px) translateZ(10px) rotateX(15deg) rotateY(270deg); }
+        }
+        
+        @keyframes cube-rotate {
+          0% { transform: rotate(45deg) rotateX(0deg) rotateY(0deg); }
+          100% { transform: rotate(45deg) rotateX(360deg) rotateY(360deg); }
+        }
+        
+        @keyframes cube-rotate-delayed {
+          0% { transform: rotate(45deg) rotateX(0deg) rotateY(0deg); }
+          100% { transform: rotate(45deg) rotateX(-360deg) rotateY(-360deg); }
+        }
+        
+        @keyframes pyramid-float {
+          0%, 100% { transform: rotate(45deg) translateY(0px) scale(1); }
+          50% { transform: rotate(45deg) translateY(-15px) scale(1.1); }
+        }
+        
+        @keyframes hexagon-spin {
+          0% { transform: rotate(0deg) scale(1); }
+          50% { transform: rotate(180deg) scale(1.1); }
+          100% { transform: rotate(360deg) scale(1); }
+        }
+        
+        @keyframes sphere-pulse {
+          0%, 100% { transform: scale(1); opacity: 0.4; }
+          50% { transform: scale(1.2); opacity: 0.6; }
+        }
+        
+        @keyframes triangle-rotate {
+          0% { transform: rotate(0deg) translateY(0px); }
+          100% { transform: rotate(360deg) translateY(-5px); }
+        }
+        
+        @keyframes ring-spin {
+          0% { transform: rotate(0deg) scale(1); }
+          50% { transform: rotate(180deg) scale(1.1); }
+          100% { transform: rotate(360deg) scale(1); }
+        }
+        
+        @keyframes ring-spin-reverse {
+          0% { transform: rotate(0deg) scale(1); }
+          50% { transform: rotate(-180deg) scale(0.9); }
+          100% { transform: rotate(-360deg) scale(1); }
+        }
+        
+        @keyframes diamond-sparkle {
+          0%, 100% { transform: rotate(45deg) scale(1); opacity: 0.35; }
+          25% { transform: rotate(45deg) scale(1.2); opacity: 0.5; }
+          50% { transform: rotate(45deg) scale(1.1); opacity: 0.6; }
+          75% { transform: rotate(45deg) scale(1.3); opacity: 0.4; }
+        }
+        
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        .animate-float-delayed { animation: float-delayed 8s ease-in-out infinite; }
+        .animate-float-slow { animation: float-slow 10s ease-in-out infinite; }
+        .animate-float-reverse { animation: float-reverse 7s ease-in-out infinite; }
+        .animate-spin-slow { animation: spin-slow 20s linear infinite; }
+        .animate-grid-move { animation: grid-move 15s linear infinite; }
+        .animate-gradient-text { 
+          animation: gradient-text 3s ease infinite;
+          background-size: 200% 200%;
+        }
+        .animate-slide-up { animation: slide-up 0.8s ease-out; }
+        .animate-width-expand { animation: width-expand 1.5s ease-out; }
+        .animate-fade-in-delayed { animation: fade-in-delayed 1s ease-out 0.5s both; }
+        .animate-bounce-subtle { animation: bounce-subtle 2s ease-in-out infinite; }
+        .animate-bounce-slow { animation: bounce-slow 3s ease-in-out infinite; }
+        .animate-scroll-indicator { animation: scroll-indicator 2s ease-in-out infinite; }
+        
+        .animate-float-3d { animation: float-3d 8s ease-in-out infinite; }
+        .animate-cube-rotate { animation: cube-rotate 12s linear infinite; }
+        .animate-cube-rotate-delayed { animation: cube-rotate-delayed 15s linear infinite; }
+        .animate-pyramid-float { animation: pyramid-float 6s ease-in-out infinite; }
+        .animate-hexagon-spin { animation: hexagon-spin 10s ease-in-out infinite; }
+        .animate-sphere-pulse { animation: sphere-pulse 4s ease-in-out infinite; }
+        .animate-triangle-rotate { animation: triangle-rotate 8s linear infinite; }
+        .animate-ring-spin { animation: ring-spin 12s ease-in-out infinite; }
+        .animate-ring-spin-reverse { animation: ring-spin-reverse 10s ease-in-out infinite; }
+        .animate-diamond-sparkle { animation: diamond-sparkle 3s ease-in-out infinite; }
+        
+        .animation-delay-200 { animation-delay: 0.2s; }
+        .animation-delay-400 { animation-delay: 0.4s; }
+        
+        .bg-gradient-radial {
+          background: radial-gradient(circle, var(--tw-gradient-stops));
+        }
+        
+        .rotate-30 { transform: rotate(30deg); }
+        
+        .border-b-gradient-to-r {
+          border-bottom: 14px solid;
+          border-image: linear-gradient(to right, #34d399, #059669) 1;
+        }
+        
+        .perspective-1000 {
+          perspective: 1000px;
+        }
+        
+        .transform-3d {
+          transform-style: preserve-3d;
+        }
+      `}</style>
     </section>
-);
+  );
+};
+
+
+
 
 // Stats Section Component
 const StatsSection = () => {
-    const [activeSatellites, satellitesRef] = useAnimatedCounter(127);
-    const [dataProducts, productsRef] = useAnimatedCounter(2847);
-    const [queriesResolved, queriesRef] = useAnimatedCounter(15432);
+  const [activeSatellites, satellitesRef] = useAnimatedCounter(127);
+  const [dataProducts, productsRef] = useAnimatedCounter(2847);
+  const [queriesResolved, queriesRef] = useAnimatedCounter(15432);
 
-    const stats = [
-        { value: activeSatellites.toLocaleString(), label: 'Active Satellites', ref: satellitesRef },
-        { value: dataProducts.toLocaleString(), label: 'Data Products', ref: productsRef },
-        { value: queriesResolved.toLocaleString(), label: 'Queries Resolved', ref: queriesRef },
-    ];
+  const stats = [
+    { value: activeSatellites.toLocaleString(), label: 'Active Satellites', ref: satellitesRef },
+    { value: dataProducts.toLocaleString(), label: 'Data Products', ref: productsRef },
+    { value: queriesResolved.toLocaleString(), label: 'Queries Resolved', ref: queriesRef },
+  ];
 
-    return (
-        <section className="py-16 bg-white dark:bg-gray-800/50 transition-colors duration-300">
-            <div className="container mx-auto px-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                    {stats.map((stat, index) => (
-                        <div key={index} ref={stat.ref} className="p-4">
-                            <h3 className="text-4xl font-bold text-blue-600 dark:text-blue-400">{stat.value}</h3>
-                            <p className="mt-2 text-gray-500 dark:text-gray-400">{stat.label}</p>
-                        </div>
-                    ))}
-                </div>
+  return (
+    <section className="relative py-16 bg-gray-900 text-white overflow-hidden">
+      {/* Background Blobs / Glow */}
+      <div className="absolute top-0 left-0 w-72 h-72 bg-blue-500 rounded-full opacity-20 blur-3xl animate-float-slow" />
+      <div className="absolute bottom-0 right-0 w-72 h-72 bg-purple-500 rounded-full opacity-20 blur-3xl animate-float-delayed" />
+      <div className="absolute top-1/2 left-1/3 w-60 h-60 bg-green-400 rounded-full opacity-10 blur-2xl animate-float" />
+
+      <div className="relative container mx-auto px-6 z-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+          {stats.map((stat, index) => (
+            <div
+              key={index}
+              ref={stat.ref}
+              className="p-6 bg-white/5 backdrop-blur-sm rounded-xl transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+            >
+              <h3 className="text-4xl font-extrabold text-cyan-400">{stat.value}</h3>
+              <p className="mt-2 text-gray-300">{stat.label}</p>
             </div>
-        </section>
-    );
+          ))}
+        </div>
+      </div>
+
+      {/* Optional Glow Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent pointer-events-none"></div>
+
+      {/* Animation Styles */}
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-20px); }
+        }
+
+        @keyframes float-slow {
+          0%, 100% { transform: translateY(0) scale(1); }
+          50% { transform: translateY(-15px) scale(1.05); }
+        }
+
+        @keyframes float-delayed {
+          0%, 100% { transform: translateY(0) scale(1); }
+          50% { transform: translateY(-25px) scale(1.1); }
+        }
+
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+
+        .animate-float-slow {
+          animation: float-slow 10s ease-in-out infinite;
+        }
+
+        .animate-float-delayed {
+          animation: float-delayed 12s ease-in-out infinite;
+        }
+      `}</style>
+    </section>
+  );
 };
+
 
 // Capability Card Component
 const CapabilityCard = ({ icon, title, description, buttonText, buttonColor, setPage, pageName }) => (

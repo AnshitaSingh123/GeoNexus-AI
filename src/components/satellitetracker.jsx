@@ -7,6 +7,7 @@ const SatelliteTrackerIcon = ({ className }) => (
         <path d="M12 10c-1.103 0-2 .897-2 2s.897 2 2 2 2-.897 2-2-.897-2-2-2z" />
         <path d="M12 4c-4.411 0-8 3.589-8 8h2c0-3.309 2.691-6 6-6s6 2.691 6 6h2c0-4.411-3.589-8-8-8z" />
     </svg>
+    
 );
 
 // Page Wrapper for consistent layout
@@ -87,7 +88,7 @@ export default function SatelliteTrackerPage({ setPage }) {
                 const newLat = (parseFloat(lat) + Math.random() * 0.01 - 0.005).toFixed(2);
                 const newLon = (parseFloat(lon) + Math.random() * 0.01 - 0.005).toFixed(2);
                 return { ...sat, position: `${newLat}°, ${newLon}°` };
-            }));
+            }));`   `
         }, 5000);
         return () => clearInterval(intervalId);
     }, []);
