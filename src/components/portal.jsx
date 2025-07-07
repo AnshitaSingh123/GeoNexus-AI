@@ -800,29 +800,13 @@ const FeaturesSection = () => {
 
       {/* Content with Premium Typography */}
       <div className="relative z-10 container mx-auto px-6">
-        <div className="text-center mb-20 px-4">
-          {/* Premium heading with subtle shine effect */}
-          <h2 className="text-4xl md:text-5xl font-medium text-gray-800 dark:text-white mb-6 tracking-tight">
-            <span className="relative inline-block">
-              <span className="relative z-10">Why Choose MOSDAC AI Portal?</span>
-              <span className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-transparent opacity-0 hover:opacity-100 rounded-lg transition-opacity duration-300"></span>
-            </span>
+        <div className="text-center mb-20">
+          <h2 className="text-5xl md:text-6xl font-bold text-gray-800 dark:text-white animate-fade-in font-[var(--font-heading)] tracking-tight">
+            Why Choose <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">MOSDAC AI</span> Portal?
           </h2>
-
-          {/* Refined paragraph with animated border */}
-          <div className="relative max-w-3xl mx-auto pb-8">
-            <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-              Experience the future of geospatial data interaction with our cutting-edge AI
-            </p>
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
-          </div>
-
-          {/* Premium indicators */}
-          <div className="flex justify-center space-x-1">
-            <div className="w-1 h-1 bg-blue-400 rounded-full"></div>
-            <div className="w-1 h-1 bg-blue-400 rounded-full opacity-80"></div>
-            <div className="w-1 h-1 bg-blue-400 rounded-full opacity-60"></div>
-          </div>
+          <p className="mt-6 text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto font-[var(--font-body)] leading-relaxed">
+            Experience the future of geospatial data interaction with our cutting-edge AI capabilities and real-time analytics.
+          </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {features.map((feature, index) => (
@@ -905,6 +889,7 @@ const FeaturesSection = () => {
 }
 
 // Footer Component
+
 const Footer = () => (
   <footer className="bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400">
     <div className="container mx-auto px-6 py-12">
