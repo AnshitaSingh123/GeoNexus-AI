@@ -975,29 +975,95 @@ const ProductCatalogPage = ({ setPage }) => {
     { name: 'Coastal Monitoring - SAR Data', satellite: 'RISAT-2B', location: 'West Coast, India', resolution: '1m', date: '2024-06-10', size: '1.8 GB', type: 'radar', color: 'green' },
     { name: 'Agricultural Assessment', satellite: 'Resourcesat-2A', location: 'Punjab, India', resolution: '5.8m', date: '2024-05-28', size: '1.2 GB', type: 'hyperspectral', color: 'purple' },
   ];
+  
   const typeColors = {
     optical: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
     radar: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
     hyperspectral: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
   };
 
+  // State for 3D preview
+  const [hoveredCard, setHoveredCard] = useState(null);
+
   return (
     <PageWrapper title="Product Catalog" setPage={setPage}>
-      <div className="flex items-center space-x-4 mb-6">
-        <div className="p-2 bg-orange-100 dark:bg-orange-900/50 rounded-lg">
+      {/* 3D Floating Satellites Background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+        {[...Array(3)].map((_, i) => (
+          <div 
+            key={i}
+            className="absolute"
+            style={{
+              width: '100px',
+              height: '100px',
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animation: `orbit ${Math.random() * 30 + 20}s linear infinite`,
+              transformStyle: 'preserve-3d',
+            }}
+          >
+            <div className="w-full h-full flex items-center justify-center">
+              <div className="w-4 h-4 rounded-full bg-white/20 border border-white/30 animate-pulse"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 3D Floating Data Points */}
+      {[...Array(20)].map((_, i) => (
+        <div 
+          key={`point-${i}`}
+          className="fixed rounded-full pointer-events-none -z-10"
+          style={{
+            width: `${Math.random() * 8 + 4}px`,
+            height: `${Math.random() * 8 + 4}px`,
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            backgroundColor: `rgba(100, 200, 255, ${Math.random() * 0.3 + 0.1})`,
+            animation: `pulse ${Math.random() * 4 + 3}s ease-in-out infinite alternate`,
+            transform: `translateZ(${Math.random() * 100 - 50}px)`,
+          }}
+        />
+      ))}
+
+      <div className="flex items-center space-x-4 mb-6 relative z-10">
+        <div className="p-2 bg-orange-100 dark:bg-orange-900/50 rounded-lg transform transition-transform hover:rotate-12">
           <ProductCatalogIcon className="h-8 w-8 text-orange-600 dark:text-orange-400" />
         </div>
         <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Product Catalog</h2>
       </div>
-      <div className="relative mb-6">
-        <input type="text" placeholder="Search products, satellites, or locations..." className="w-full bg-gray-100 dark:bg-gray-700 border-2 border-transparent focus:border-blue-500 focus:ring-0 rounded-lg py-3 pl-10 pr-4 text-gray-800 dark:text-gray-200 transition-colors" />
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" /></svg>
+
+      <div className="relative mb-6 z-10">
+        <input 
+          type="text" 
+          placeholder="Search products, satellites, or locations..." 
+          className="w-full bg-gray-100 dark:bg-gray-700 border-2 border-transparent focus:border-blue-500 focus:ring-0 rounded-lg py-3 pl-10 pr-4 text-gray-800 dark:text-gray-200 transition-all hover:shadow-lg" 
+        />
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+        </svg>
       </div>
-      <div className="space-y-4">
+
+      <div className="space-y-4 relative z-10">
         {products.map((product, index) => (
-          <div key={index} className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-shadow hover:shadow-md">
+          <div 
+            key={index}
+            className={`bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-all duration-300 ${hoveredCard === index ? 'shadow-xl scale-[1.01]' : 'shadow-md hover:shadow-lg'}`}
+            style={{
+              transformStyle: 'preserve-3d',
+              transform: hoveredCard === index ? 'perspective(1000px) rotateX(1deg) rotateY(2deg)' : 'perspective(1000px)',
+              border: hoveredCard === index ? '1px solid rgba(59, 130, 246, 0.3)' : '1px solid transparent',
+            }}
+            onMouseEnter={() => setHoveredCard(index)}
+            onMouseLeave={() => setHoveredCard(null)}
+          >
             <div className="flex items-start gap-4">
-              <div className="p-3 bg-gray-200 dark:bg-gray-700 rounded-lg">
+              <div 
+                className="p-3 bg-gray-200 dark:bg-gray-700 rounded-lg transition-transform duration-300"
+                style={{
+                  transform: hoveredCard === index ? 'translateZ(10px)' : 'translateZ(0)',
+                }}
+              >
                 <SatelliteTrackerIcon className="h-8 w-8 text-gray-600 dark:text-gray-400" />
               </div>
               <div>
@@ -1009,20 +1075,87 @@ const ProductCatalogPage = ({ setPage }) => {
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-4 w-full md:w-auto mt-4 md:mt-0">
-              <span className={`px-3 py-1 text-xs font-medium rounded-full ${typeColors[product.type]}`}>{product.type}</span>
+            <div 
+              className="flex items-center gap-4 w-full md:w-auto mt-4 md:mt-0"
+              style={{
+                transform: hoveredCard === index ? 'translateZ(20px)' : 'translateZ(0)',
+              }}
+            >
+              <span className={`px-3 py-1 text-xs font-medium rounded-full ${typeColors[product.type]}`}>
+                {product.type}
+              </span>
               <span className="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">Size: {product.size}</span>
-              <button className="px-4 py-2 text-sm font-semibold text-blue-600 bg-blue-100 dark:bg-blue-900/50 dark:text-blue-300 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900 transition-colors">Preview</button>
-              <button className="px-4 py-2 text-sm font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors">Download</button>
+              <button 
+                className="px-4 py-2 text-sm font-semibold text-blue-600 bg-blue-100 dark:bg-blue-900/50 dark:text-blue-300 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900 transition-all hover:scale-105"
+                style={{
+                  transformStyle: 'preserve-3d',
+                }}
+              >
+                3D Preview
+              </button>
+              <button className="px-4 py-2 text-sm font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700 transition-all hover:scale-105 flex items-center gap-1">
+                <span>Download</span>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </button>
             </div>
           </div>
         ))}
       </div>
-      <p className="text-center mt-8 text-gray-500 dark:text-gray-400">Showing 3 of 3 products</p>
+
+      <p className="text-center mt-8 text-gray-500 dark:text-gray-400 relative z-10">Showing 3 of 3 products</p>
+
+      {/* 3D Floating Action Button */}
+      <div className="fixed bottom-8 right-8 z-20">
+        <button 
+          className="p-4 bg-blue-600 text-white rounded-full shadow-xl hover:bg-blue-700 transition-all hover:scale-110 flex items-center justify-center"
+          style={{
+            transformStyle: 'preserve-3d',
+            boxShadow: '0 10px 25px -5px rgba(59, 130, 246, 0.4)',
+            animation: 'float 6s ease-in-out infinite',
+          }}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+        </button>
+      </div>
+
+      {/* CSS for 3D animations */}
+      <style jsx>{`
+        @keyframes orbit {
+          0% {
+            transform: rotate(0deg) translateX(150px) rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg) translateX(150px) rotate(-360deg);
+          }
+        }
+        
+        @keyframes pulse {
+          0% {
+            opacity: 0.2;
+            transform: scale(0.8) translateZ(0);
+          }
+          100% {
+            opacity: 0.8;
+            transform: scale(1.2) translateZ(20px);
+          }
+        }
+        
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0) translateZ(0);
+          }
+          50% {
+            transform: translateY(-15px) translateZ(10px);
+          }
+        }
+      `}</style>
     </PageWrapper>
   );
 };
-
 // Placeholder Page for unimplemented features
 const PlaceholderPage = ({ setPage, title, icon }) => (
   <PageWrapper title={title} setPage={setPage}>
