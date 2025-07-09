@@ -83,34 +83,59 @@ const PageWrapper = ({ children, setPage }) => (
     </div>
 );
 
-// Dark Message Bubble
-const MessageBubble = ({ message, isUser }) => (
-    <div className={`flex items-end gap-3 ${isUser ? 'justify-end' : 'justify-start'} group`}>
-        {!isUser && (
-            <div className="flex-shrink-0 mb-1">
-                <AIAssistantIcon />
-            </div>
-        )}
-        
-        <div className={`max-w-md transform transition-all duration-200 hover:scale-[1.02] ${
-            isUser ? 'hover:shadow-lg' : 'hover:shadow-md'
-        }`}>
-            <div className={`px-4 py-3 rounded-2xl ${
-                isUser 
-                ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-br-md shadow' 
-                : 'bg-gray-700 border border-gray-600 text-gray-100 rounded-bl-md shadow-sm'
+// Dark Message Bubble with TTS controls
+const MessageBubble = ({ message, isUser, onSpeak, isSpeaking, currentSpeakingId }) => {
+    const isCurrentlySpeaking = currentSpeakingId === message.id && isSpeaking;
+    
+    return (
+        <div className={`flex items-end gap-3 ${isUser ? 'justify-end' : 'justify-start'} group`}>
+            {!isUser && (
+                <div className="flex-shrink-0 mb-1">
+                    <AIAssistantIcon />
+                </div>
+            )}
+            
+            <div className={`max-w-md transform transition-all duration-200 hover:scale-[1.02] ${
+                isUser ? 'hover:shadow-lg' : 'hover:shadow-md'
             }`}>
-                <p className="text-sm leading-relaxed">{message.text}</p>
+                <div className={`px-4 py-3 rounded-2xl ${
+                    isUser 
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-br-md shadow' 
+                    : 'bg-gray-700 border border-gray-600 text-gray-100 rounded-bl-md shadow-sm'
+                }`}>
+                    <p className="text-sm leading-relaxed">{message.text}</p>
+                    
+                    {/* TTS controls for bot messages */}
+                    {!isUser && (
+                        <div className="mt-2 flex justify-end">
+                            <button 
+                                onClick={() => onSpeak(message)}
+                                className={`p-1 rounded-full ${isCurrentlySpeaking ? 'bg-red-500/20' : 'bg-blue-500/20'} hover:bg-blue-500/30 transition-colors`}
+                                title={isCurrentlySpeaking ? "Stop playback" : "Listen to response"}
+                            >
+                                {isCurrentlySpeaking ? (
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                                    </svg>
+                                ) : (
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                                    </svg>
+                                )}
+                            </button>
+                        </div>
+                    )}
+                </div>
             </div>
+            
+            {isUser && (
+                <div className="flex-shrink-0 mb-1">
+                    <UserIcon />
+                </div>
+            )}
         </div>
-        
-        {isUser && (
-            <div className="flex-shrink-0 mb-1">
-                <UserIcon />
-            </div>
-        )}
-    </div>
-);
+    );
+};
 
 // Dark Typing Indicator
 const TypingIndicator = () => (
@@ -172,7 +197,10 @@ export default function ChatbotPage({ setPage }) {
     const [inputValue, setInputValue] = useState('');
     const [isTyping, setIsTyping] = useState(false);
     const [isListening, setIsListening] = useState(false);
+    const [isSpeaking, setIsSpeaking] = useState(false);
+    const [currentSpeakingId, setCurrentSpeakingId] = useState(null);
     const recognitionRef = useRef(null);
+    const speechSynthesisRef = useRef(null);
     const chatEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -182,6 +210,15 @@ export default function ChatbotPage({ setPage }) {
     useEffect(() => {
         scrollToBottom();
     }, [messages, isTyping]);
+
+    // Clean up speech synthesis on unmount
+    useEffect(() => {
+        return () => {
+            if (speechSynthesisRef.current) {
+                window.speechSynthesis.cancel();
+            }
+        };
+    }, []);
 
     const handleSendMessage = (text) => {
         const content = text.trim();
@@ -262,6 +299,34 @@ export default function ChatbotPage({ setPage }) {
         setIsListening(false);
     };
 
+    const handleSpeak = (message) => {
+        if (isSpeaking && currentSpeakingId === message.id) {
+            // If this message is currently speaking, stop it
+            window.speechSynthesis.cancel();
+            setIsSpeaking(false);
+            setCurrentSpeakingId(null);
+            return;
+        }
+
+        // Stop any currently playing speech
+        window.speechSynthesis.cancel();
+
+        // Start speaking the new message
+        const utterance = new SpeechSynthesisUtterance(message.text);
+        utterance.onend = () => {
+            setIsSpeaking(false);
+            setCurrentSpeakingId(null);
+        };
+        utterance.onerror = () => {
+            setIsSpeaking(false);
+            setCurrentSpeakingId(null);
+        };
+
+        window.speechSynthesis.speak(utterance);
+        setIsSpeaking(true);
+        setCurrentSpeakingId(message.id);
+    };
+
     const quickSuggestions = [
         'Recent satellite missions',
         'Mumbai data search',
@@ -294,6 +359,9 @@ export default function ChatbotPage({ setPage }) {
                             key={msg.id} 
                             message={msg} 
                             isUser={msg.sender === 'user'} 
+                            onSpeak={handleSpeak}
+                            isSpeaking={isSpeaking}
+                            currentSpeakingId={currentSpeakingId}
                         />
                     ))}
                     {isTyping && <TypingIndicator />}
@@ -377,4 +445,4 @@ export default function ChatbotPage({ setPage }) {
             `}</style>
         </PageWrapper>
     );
-}
+}cd 
