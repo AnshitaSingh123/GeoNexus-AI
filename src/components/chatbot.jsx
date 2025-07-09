@@ -160,7 +160,7 @@ const GeometricDecor = () => {
     );
 };
 
-// Main Chatbot Component with Dark UI
+// Main Chatbot Component with Dark UI and Speech Recognition
 export default function ChatbotPage({ setPage }) {
     const [messages, setMessages] = useState([
         {
@@ -171,6 +171,8 @@ export default function ChatbotPage({ setPage }) {
     ]);
     const [inputValue, setInputValue] = useState('');
     const [isTyping, setIsTyping] = useState(false);
+    const [isListening, setIsListening] = useState(false);
+    const recognitionRef = useRef(null);
     const chatEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -203,6 +205,61 @@ export default function ChatbotPage({ setPage }) {
             setMessages(prev => [...prev, botResponse]);
             setIsTyping(false);
         }, 2000);
+    };
+
+    const startSpeechRecognition = () => {
+        if (isListening) {
+            stopSpeechRecognition();
+            return;
+        }
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert("Speech recognition is not supported in your browser.");
+            return;
+        }
+
+        const recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = true;
+        recognition.lang = 'en-US';
+
+        recognition.onstart = () => {
+            setIsListening(true);
+            setInputValue("Listening...");
+        };
+
+        recognition.onresult = (event) => {
+            const transcript = Array.from(event.results)
+                .map(result => result[0])
+                .map(result => result.transcript)
+                .join('');
+            
+            setInputValue(transcript);
+        };
+
+        recognition.onerror = (event) => {
+            console.error("Speech recognition error", event.error);
+            setIsListening(false);
+            setInputValue("");
+        };
+
+        recognition.onend = () => {
+            setIsListening(false);
+            if (inputValue && inputValue !== "Listening...") {
+                handleSendMessage(inputValue);
+            }
+        };
+
+        recognition.start();
+        recognitionRef.current = recognition;
+    };
+
+    const stopSpeechRecognition = () => {
+        if (recognitionRef.current) {
+            recognitionRef.current.stop();
+        }
+        setIsListening(false);
     };
 
     const quickSuggestions = [
@@ -259,24 +316,49 @@ export default function ChatbotPage({ setPage }) {
                     </div>
                 )}
                 
-                {/* Input */}
-                <div className="relative">
+                {/* Input with Mic Button */}
+                <div className="relative flex items-center">
                     <input 
                         type="text" 
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleSendMessage(inputValue)}
-                        placeholder="Type your message..." 
-                        className="w-full bg-gray-700 border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 rounded-2xl py-3 pl-4 pr-12 text-gray-200 placeholder-gray-400 transition-all duration-200"
+                        placeholder={isListening ? "Listening..." : "Type your message..."} 
+                        className="flex-grow bg-gray-700 border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 rounded-2xl py-3 pl-4 pr-12 text-gray-200 placeholder-gray-400 transition-all duration-200"
                     />
                     
+                    {/* Send Button */}
                     <button 
                         onClick={() => handleSendMessage(inputValue)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-colors duration-200 flex items-center justify-center disabled:bg-gray-600 disabled:cursor-not-allowed"
+                        className="absolute right-14 top-1/2 -translate-y-1/2 w-8 h-8 bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-colors duration-200 flex items-center justify-center disabled:bg-gray-600 disabled:cursor-not-allowed"
                         disabled={!inputValue.trim() || isTyping}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                        </svg>
+                    </button>
+                    
+                    {/* Microphone Button */}
+                    <button
+                        onClick={startSpeechRecognition}
+                        className={`ml-2 w-10 h-10 rounded-xl flex items-center justify-center transition-colors duration-200 ${
+                            isListening 
+                                ? 'bg-red-600 hover:bg-red-500 animate-pulse' 
+                                : 'bg-gray-700 hover:bg-gray-600 border border-gray-600'
+                        }`}
+                        title={isListening ? "Stop listening" : "Start voice input"}
+                    >
+                        <svg 
+                            xmlns="http://www.w3.org/2000/svg" 
+                            className="h-5 w-5" 
+                            viewBox="0 0 20 20" 
+                            fill="currentColor"
+                        >
+                            <path 
+                                fillRule="evenodd" 
+                                d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" 
+                                clipRule="evenodd" 
+                            />
                         </svg>
                     </button>
                 </div>
